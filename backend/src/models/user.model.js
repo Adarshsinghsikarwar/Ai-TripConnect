@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      maxlength: 100,
     },
     email: {
       type: String,
@@ -14,13 +15,63 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
     password: {
       type: String,
       required: true,
       select: false,
+      minlength: 8,
     },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
+
+    // A user can be a traveler and a provider at the same time.
+    roles: {
+      type: [String],
+      enum: ["traveler", "provider", "admin"],
+      default: ["traveler"],
+    },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+    googleId: {
+      type: String,
+      index: true,
+      sparse: true,
+    },
+
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    // Brute-force protection : lock the account after repeated failed logins.
+
+    failedLoginAttempts: {
+      type: Number,
+      default: 0,
+      select: false,
+    },
+    lockUntil: {
+      type: Date,
+      default: null,
+      select: false,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    avatarUrl: {
+      type: String,
+      default: null,
+    },
+    phone: {
+      type: String,
+      trim: true,
+      default: null,
+    },
     refreshTokenHash: { type: String, select: false, default: null },
   },
   {
@@ -31,12 +82,15 @@ const userSchema = new mongoose.Schema(
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
 userSchema.methods.comparePassword = function (candidate) {
   return bcrypt.compare(candidate, this.password);
 };
 
-const userModel = mongoose.model("User", userSchema);
+userSchema.methods.isLocked = function () {
+  return this.lockUntil && this.lockUntil > Date.now();
+};
 
-export default userModel;
+export default mongoose.model("User", userSchema);

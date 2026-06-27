@@ -1,11 +1,14 @@
 import express from "express";
+import passport from "passport";
 import {
   register,
   login,
   refresh,
   logout,
+  googleCallback,
 } from "../controllers/auth.controller.js";
 import { requireAuth } from "../middlewares/auth.middleware.js";
+import { authLimiter } from "../middlewares/rateLimiter.middleware.js";
 
 const router = express.Router();
 
