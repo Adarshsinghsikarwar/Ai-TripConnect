@@ -5,6 +5,7 @@ import expenseRoutes from "./expenses.route.js";
 import analyticsRoutes from "./analytics.routes.js";
 import providerRoutes from "./provider.routes.js";
 import bookingRoutes from "./booking.routes.js";
+import reviewRoutes from "./review.routes.js";
 
 const router = express.Router();
 
@@ -14,6 +15,6 @@ router.use("/expenses", expenseRoutes);
 router.use("/analytics", analyticsRoutes);
 router.use("/providers", providerRoutes);
 router.use("/bookings", bookingRoutes);
-
+router.use("/reviews", reviewRoutes);
 
 export default router;
