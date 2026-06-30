@@ -42,15 +42,9 @@ const env = {
     webhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET,
   },
 
-  cloudinary: {
-    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-    apiKey: process.env.CLOUDINARY_API_KEY,
-    apiSecret: process.env.CLOUDINARY_API_SECRET,
-  },
-
   mistral: {
     apiKey: process.env.MISTRAL_API_KEY,
-    model: process.env.MISTRAL_MODEL || "mistral-7b-instruct-v0.1",
+    model: process.env.MISTRAL_MODEL || "mistral-large-latest",
   },
 
   brevo: {
