@@ -1,12 +1,11 @@
-import express from "express";
-import { requireAuth } from "../middleware/auth.middleware.js";
-import {
-  generateItinerary,
-  getItineraryForTrip,
-} from "../controllers/itinerary.controller.js";
+import express from 'express';
+import requireAuth from '../middlewares/auth.middleware.js';
+import { generateItinerary, getItineraryForTrip } from '../controllers/itinerary.controller.js';
 
 const router = express.Router();
+router.use(requireAuth);
 
-router.post("/generate", requireAuth, generateItinerary);
-router.get("/trip/:tripId", requireAuth, getItineraryForTrip);
+router.post('/generate', generateItinerary);
+router.get('/trip/:tripId', getItineraryForTrip);
+
 export default router;

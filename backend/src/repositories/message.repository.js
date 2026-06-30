@@ -1,15 +1,13 @@
-import Message from "../models/message.model.js";
+import Message from '../models/message.model.js';
 
 class MessageRepository {
   create(data) {
     return Message.create(data);
   }
+
   findByBooking(bookingId, { page = 1, limit = 50 } = {}) {
     const skip = (page - 1) * limit;
-    return Message.find({ booking: bookingId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    return Message.find({ booking: bookingId }).sort({ createdAt: -1 }).skip(skip).limit(limit);
   }
 
   markReadForUser(bookingId, recipientUserId) {

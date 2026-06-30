@@ -5,17 +5,16 @@
 // express-mongo-sanitize does the latter, which breaks on modern Express/Node
 // because req.query is a getter-only property there (no setter) — this avoids
 // that incompatibility entirely while doing the same job.
-
 function stripBadKeys(obj) {
-  if (obj === null || typeof obj !== "object") return;
+  if (obj === null || typeof obj !== 'object') return;
 
   if (Array.isArray(obj)) {
     obj.forEach(stripBadKeys);
     return;
   }
 
-  for (const key in Object.keys(obj)) {
-    if (key.startsWith("$") || key.includes(".")) {
+  for (const key of Object.keys(obj)) {
+    if (key.startsWith('$') || key.includes('.')) {
       delete obj[key];
       continue;
     }
@@ -30,4 +29,4 @@ function sanitizeInputs(req, res, next) {
   next();
 }
 
-export { sanitizeInputs };
+export default sanitizeInputs;

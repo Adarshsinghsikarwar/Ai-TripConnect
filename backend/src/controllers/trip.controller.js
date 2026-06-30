@@ -1,10 +1,10 @@
-import tripService from "../services/trip.service.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
-import ApiResponse from "../utils/ApiResponse.js";
+import tripService from '../services/trip.service.js';
+import asyncHandler from '../utils/asyncHandler.js';
+import ApiResponse from '../utils/apiResponse.js';
 
 const createTrip = asyncHandler(async (req, res) => {
   const trip = await tripService.createTrip(req.userId, req.body);
-  res.status(201).json(new ApiResponse(201, trip, "Trip created"));
+  res.status(201).json(new ApiResponse(201, trip, 'Trip created'));
 });
 
 const getMyTrips = asyncHandler(async (req, res) => {
@@ -23,17 +23,13 @@ const getTripById = asyncHandler(async (req, res) => {
 });
 
 const updateTrip = asyncHandler(async (req, res) => {
-  const trip = await tripService.updateTrip(
-    req.params.id,
-    req.userId,
-    req.body
-  );
-  res.status(200).json(new ApiResponse(200, trip, "Trip updated"));
+  const trip = await tripService.updateTrip(req.params.id, req.userId, req.body);
+  res.status(200).json(new ApiResponse(200, trip, 'Trip updated'));
 });
 
 const deleteTrip = asyncHandler(async (req, res) => {
   await tripService.deleteTrip(req.params.id, req.userId);
-  res.status(200).json(new ApiResponse(200, null, "Trip deleted"));
+  res.status(200).json(new ApiResponse(200, null, 'Trip deleted'));
 });
 
 // Returns a suggested title/description/destination/budget from rough notes.
@@ -41,14 +37,8 @@ const deleteTrip = asyncHandler(async (req, res) => {
 // traveler reviews/edits it, then calls POST /trips normally.
 const generateDraft = asyncHandler(async (req, res) => {
   const draft = await tripService.generateDraft(req.body.notes);
-  res.status(200).json(new ApiResponse(200, draft, "Draft generated"));
+  res.status(200).json(new ApiResponse(200, draft, 'Draft generated'));
 });
 
-export {
-  createTrip,
-  getMyTrips,
-  getTripById,
-  updateTrip,
-  deleteTrip,
-  generateDraft,
-};
+export { createTrip, getMyTrips, getTripById, updateTrip, deleteTrip, generateDraft };
+export default { createTrip, getMyTrips, getTripById, updateTrip, deleteTrip, generateDraft };

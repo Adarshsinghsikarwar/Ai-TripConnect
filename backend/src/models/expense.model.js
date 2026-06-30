@@ -1,22 +1,13 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+
 
 const expenseSchema = new mongoose.Schema(
   {
-    trip: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Trip",
-      required: true,
-      index: true,
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
+    trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip', required: true, index: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     category: {
       type: String,
-      enum: ["food", "stay", "travel", "activity", "shopping", "other"],
+      enum: ['food', 'stay', 'travel', 'activity', 'shopping', 'other'],
       required: true,
     },
     amount: { type: Number, required: true, min: 0 },
@@ -26,4 +17,4 @@ const expenseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Expense", expenseSchema);
+export default mongoose.model('Expense', expenseSchema);

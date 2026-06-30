@@ -1,4 +1,4 @@
-import Booking from "../models/booking.model.js";
+import Booking from '../models/booking.model.js';
 
 class BookingRepository {
   create(data) {
@@ -6,25 +6,19 @@ class BookingRepository {
   }
 
   findById(id) {
-    return Booking.findById(id)
-      .populate("provider")
-      .populate("traveler", "name email");
+    return Booking.findById(id).populate('provider').populate('traveler', 'name email');
   }
 
   findByOrderId(orderId) {
-    return Booking.findOne({ "payment.razorpayOrderId": orderId });
+    return Booking.findOne({ 'payment.razorpayOrderId': orderId });
   }
 
   findByTraveler(travelerId) {
-    return Booking.find({ traveler: travelerId })
-      .sort({ createdAt: -1 })
-      .populate("provider");
+    return Booking.find({ traveler: travelerId }).sort({ createdAt: -1 }).populate('provider');
   }
 
   findByProvider(providerId) {
-    return Booking.find({ provider: providerId })
-      .sort({ createdAt: -1 })
-      .populate("traveler", "name email");
+    return Booking.find({ provider: providerId }).sort({ createdAt: -1 }).populate('traveler', 'name email');
   }
 
   updateStatus(id, status, extra = {}) {
@@ -42,10 +36,7 @@ class BookingRepository {
   }
 
   findExpiredRequests() {
-    return Booking.find({
-      status: "requested",
-      respondBy: { $lt: new Date() },
-    });
+    return Booking.find({ status: 'requested', respondBy: { $lt: new Date() } });
   }
 
   aggregate(pipeline) {

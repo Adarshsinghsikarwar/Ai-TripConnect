@@ -1,36 +1,28 @@
-import { mistral } from "../config/env.js";
+import { mistral } from '../config/env.js';
 
 class AINotConfiguredError extends Error {
   constructor() {
-    super("AI features are not configured on this server");
-    this.code = "AI_NOT_CONFIGURED";
+    super('AI features are not configured on this server');
+    this.code = 'AI_NOT_CONFIGURED';
   }
 }
 
 // One low-level call to Mistral's chat completions endpoint. Every AI feature
 // in this app (itinerary, smart search, review summary, chat assistant) goes
 // through this single function — one place to change models, timeouts, etc.
-async function chatCompletion({
-  messages,
-  tools,
-  responseFormat,
-  maxTokens = 1000,
-}) {
+async function chatCompletion({ messages, tools, responseFormat, maxTokens = 1000 }) {
   if (!mistral.apiKey) throw new AINotConfiguredError();
 
   const body = { model: mistral.model, messages, max_tokens: maxTokens };
   if (tools) {
     body.tools = tools;
-    body.tool_choice = "auto";
+    body.tool_choice = 'auto';
   }
   if (responseFormat) body.response_format = responseFormat;
 
-  const response = await fetch("https://api.mistral.ai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${mistral.apiKey}`,
-    },
+  const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${mistral.apiKey}` },
     body: JSON.stringify(body),
   });
 
@@ -44,13 +36,7 @@ async function chatCompletion({
 // Generic tool-calling loop, reused by anything that needs the model to call
 // our own functions (search_providers, search_reviews, etc.) before answering.
 // `toolImplementations` maps tool name -> async function(args) -> result.
-async function runToolLoop({
-  messages,
-  tools,
-  toolImplementations,
-  maxRounds = 3,
-  maxTokens = 1500,
-}) {
+async function runToolLoop({ messages, tools, toolImplementations, maxRounds = 3, maxTokens = 1500 }) {
   for (let i = 0; i < maxRounds; i++) {
     const data = await chatCompletion({ messages, tools, maxTokens });
     const choice = data.choices[0].message;
@@ -61,13 +47,11 @@ async function runToolLoop({
     }
 
     for (const toolCall of choice.tool_calls) {
-      const args = JSON.parse(toolCall.function.arguments || "{}");
+      const args = JSON.parse(toolCall.function.arguments || '{}');
       const impl = toolImplementations[toolCall.function.name];
-      const result = impl
-        ? await impl(args)
-        : { error: "Unknown tool requested" };
+      const result = impl ? await impl(args) : { error: 'Unknown tool requested' };
       messages.push({
-        role: "tool",
+        role: 'tool',
         tool_call_id: toolCall.id,
         name: toolCall.function.name,
         content: JSON.stringify(result),
@@ -78,3 +62,4 @@ async function runToolLoop({
 }
 
 export { chatCompletion, runToolLoop, AINotConfiguredError };
+export default { chatCompletion, runToolLoop, AINotConfiguredError };

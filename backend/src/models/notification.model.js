@@ -1,23 +1,12 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+
 
 const notificationSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     type: {
       type: String,
-      enum: [
-        "booking_request",
-        "booking_confirmed",
-        "booking_cancelled",
-        "payment_success",
-        "review_received",
-        "message",
-      ],
+      enum: ['booking_request', 'booking_confirmed', 'booking_cancelled', 'payment_success', 'review_received', 'message'],
       required: true,
     },
     title: { type: String, required: true },
@@ -28,4 +17,4 @@ const notificationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Notification", notificationSchema);
+export default mongoose.model('Notification', notificationSchema);

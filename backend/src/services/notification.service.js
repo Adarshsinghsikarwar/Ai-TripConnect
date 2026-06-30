@@ -1,16 +1,16 @@
-import notificationRep from "../repositories/notification.repository.js";
-import { brevo } from "../config/env.js";
-import logger from "../config/logger.js";
+import notificationRepo from '../repositories/notification.repository.js';
+import { brevo } from '../config/env.js';
+import logger from '../utils/logger.js';
 
 // Sends one transactional email via Brevo's REST API. No SDK needed — it's a
 // single HTTPS call, which is also easier to reason about than maintaining
 // an SMTP connection (and side-steps cloud providers that throttle SMTP ports).
 async function sendBrevoEmail({ to, subject, text }) {
-  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-    method: "POST",
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      "api-key": brevo.apiKey,
+      'Content-Type': 'application/json',
+      'api-key': brevo.apiKey,
     },
     body: JSON.stringify({
       sender: { email: brevo.senderEmail, name: brevo.senderName },
@@ -31,13 +31,7 @@ class NotificationService {
   // blocks or fails the calling request (booking/payment flow must not break
   // just because the email provider is down).
   async notify({ userId, type, title, body, relatedId, emailTo }) {
-    const notification = await notificationRepo.create({
-      user: userId,
-      type,
-      title,
-      body,
-      relatedId,
-    });
+    const notification = await notificationRepo.create({ user: userId, type, title, body, relatedId });
 
     if (emailTo && brevo.apiKey) {
       sendBrevoEmail({ to: emailTo, subject: title, text: body }).catch((err) =>

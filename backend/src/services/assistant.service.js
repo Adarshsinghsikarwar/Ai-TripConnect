@@ -16,12 +16,12 @@
 // these functions; we run it ourselves and hand back plain data.
 // ============================================================================
 
-import providerRepo from "../repositories/provider.repository.js";
-import reviewRepo from "../repositories/review.repository.js";
-import bookingRepo from "../repositories/booking.repository.js";
-import ApiError from "../utils/ApiError.js";
-import { runToolLoop, AINotConfiguredError } from "../utils/mistalClient.js";
-import logger from "../utils/logger.js";
+import providerRepo from '../repositories/provider.repository.js';
+import reviewRepo from '../repositories/review.repository.js';
+import bookingRepo from '../repositories/booking.repository.js';
+import ApiError from '../utils/apiError.js';
+import { runToolLoop, AINotConfiguredError } from '../utils/mistralClient.js';
+import logger from '../utils/logger.js';
 
 const SYSTEM_PROMPT = `You are a helpful travel assistant for TripConnect, a trip-planning and
 local-service marketplace. Answer traveler questions using these tools to ground your answers
@@ -36,75 +36,54 @@ Rules:
 
 const TOOLS = [
   {
-    type: "function",
+    type: 'function',
     function: {
-      name: "search_providers",
-      description:
-        "Search verified local service providers by city and/or service type.",
+      name: 'search_providers',
+      description: 'Search verified local service providers by city and/or service type.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
-          city: { type: "string" },
+          city: { type: 'string' },
           serviceType: {
-            type: "string",
-            enum: [
-              "guide",
-              "driver",
-              "homestay",
-              "planner",
-              "photographer",
-              "other",
-            ],
+            type: 'string',
+            enum: ['guide', 'driver', 'homestay', 'planner', 'photographer', 'other'],
           },
         },
       },
     },
   },
   {
-    type: "function",
+    type: 'function',
     function: {
-      name: "get_provider_reviews",
-      description:
-        'Fetch real traveler reviews for a specific provider by its id, to assess quality/fit for a question like "is this guide good for families?".',
+      name: 'get_provider_reviews',
+      description: 'Fetch real traveler reviews for a specific provider by its id, to assess quality/fit for a question like "is this guide good for families?".',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
-          providerId: {
-            type: "string",
-            description: "Mongo ObjectId of the provider",
-          },
+          providerId: { type: 'string', description: 'Mongo ObjectId of the provider' },
         },
-        required: ["providerId"],
+        required: ['providerId'],
       },
     },
   },
   {
-    type: "function",
+    type: 'function',
     function: {
-      name: "get_booking_status",
-      description:
-        "Check the status (requested/confirmed/completed/cancelled etc.) and details of one of the CURRENT logged-in user's own bookings, given a booking id.",
+      name: 'get_booking_status',
+      description: "Check the status (requested/confirmed/completed/cancelled etc.) and details of one of the CURRENT logged-in user's own bookings, given a booking id.",
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
-          bookingId: {
-            type: "string",
-            description: "Mongo ObjectId of the booking to check",
-          },
+          bookingId: { type: 'string', description: 'Mongo ObjectId of the booking to check' },
         },
-        required: ["bookingId"],
+        required: ['bookingId'],
       },
     },
   },
 ];
 
 async function searchProvidersTool({ city, serviceType }) {
-  const { results } = await providerRepo.search({
-    city,
-    serviceType,
-    page: 1,
-    limit: 5,
-  });
+  const { results } = await providerRepo.search({ city, serviceType, page: 1, limit: 5 });
   return results.map((p) => ({
     id: p._id,
     title: p.title,
@@ -117,11 +96,8 @@ async function searchProvidersTool({ city, serviceType }) {
 
 async function getProviderReviewsTool({ providerId }) {
   const reviews = await reviewRepo.findByProvider(providerId);
-  if (!reviews.length)
-    return { message: "No reviews found for this provider yet." };
-  return reviews
-    .slice(0, 10)
-    .map((r) => ({ rating: r.rating, comment: r.comment }));
+  if (!reviews.length) return { message: 'No reviews found for this provider yet.' };
+  return reviews.slice(0, 10).map((r) => ({ rating: r.rating, comment: r.comment }));
 }
 
 // userId is the logged-in user's id, taken from their JWT access token. We
@@ -131,15 +107,14 @@ async function getProviderReviewsTool({ providerId }) {
 function makeGetBookingStatusTool(userId) {
   return async function getBookingStatusTool({ bookingId }) {
     const booking = await bookingRepo.findById(bookingId);
-    if (!booking) return { message: "No booking found with that id." };
+    if (!booking) return { message: 'No booking found with that id.' };
 
-    const belongsToCurrentUser =
-      String(booking.traveler._id || booking.traveler) === String(userId);
+    const belongsToCurrentUser = String(booking.traveler._id || booking.traveler) === String(userId);
     if (!belongsToCurrentUser) {
       // We deliberately do NOT say "this belongs to someone else" — just a
       // generic "can't access" message, so the AI can't use this to probe
       // whether a given booking id exists for another user.
-      return { message: "You do not have access to this booking." };
+      return { message: 'You do not have access to this booking.' };
     }
 
     return {
@@ -156,11 +131,11 @@ class AssistantService {
   // userId is required now (it wasn't before) because get_booking_status
   // needs to know WHO is asking, so it only ever shows that person's own data.
   async ask(userId, question) {
-    if (!question?.trim()) throw new ApiError(400, "question is required");
+    if (!question?.trim()) throw new ApiError(400, 'question is required');
 
     const messages = [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: question },
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: question },
     ];
 
     try {
@@ -174,22 +149,15 @@ class AssistantService {
         },
       });
 
-      if (!answer)
-        throw new ApiError(502, "Assistant did not return an answer in time");
+      if (!answer) throw new ApiError(502, 'Assistant did not return an answer in time');
       return { answer };
     } catch (err) {
       if (err instanceof AINotConfiguredError) {
-        throw new ApiError(
-          503,
-          "The travel assistant is not configured on this server"
-        );
+        throw new ApiError(503, 'The travel assistant is not configured on this server');
       }
       if (err instanceof ApiError) throw err;
       logger.error(`Assistant error: ${err.message}`);
-      throw new ApiError(
-        502,
-        "The travel assistant is temporarily unavailable"
-      );
+      throw new ApiError(502, 'The travel assistant is temporarily unavailable');
     }
   }
 }

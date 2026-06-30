@@ -1,4 +1,4 @@
-import Notification from "../models/notification.model.js";
+import Notification from '../models/notification.model.js';
 
 class NotificationRepository {
   create(data) {
@@ -12,10 +12,7 @@ class NotificationRepository {
   }
 
   markRead(id, userId) {
-    return Notification.findOneAndUpdate(
-      { _id: id, user: userId },
-      { readAt: new Date() }
-    );
+    return Notification.findOneAndUpdate({ _id: id, user: userId }, { readAt: new Date() });
   }
 }
 

@@ -1,4 +1,4 @@
-import Expense from "../models/expense.model.js";
+import Expense from '../models/expense.model.js';
 
 class ExpenseRepository {
   create(data) {

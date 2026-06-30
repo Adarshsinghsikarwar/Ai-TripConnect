@@ -1,4 +1,5 @@
-import Review from "../models/review.model.js";
+import mongoose from 'mongoose';
+import Review from '../models/review.model.js';
 
 class ReviewRepository {
   create(data) {
@@ -10,23 +11,15 @@ class ReviewRepository {
   }
 
   aggregateProviderStats(providerId) {
-    const mongoose = require("mongoose");
+    
     return Review.aggregate([
       { $match: { provider: new mongoose.Types.ObjectId(providerId) } },
-      {
-        $group: {
-          _id: "$provider",
-          avgRating: { $avg: "$rating" },
-          count: { $sum: 1 },
-        },
-      },
+      { $group: { _id: '$provider', avgRating: { $avg: '$rating' }, count: { $sum: 1 } } },
     ]);
   }
 
   findByProvider(providerId) {
-    return Review.find({ provider: providerId })
-      .populate("traveler", "name avatarUrl")
-      .sort({ createdAt: -1 });
+    return Review.find({ provider: providerId }).populate('traveler', 'name avatarUrl').sort({ createdAt: -1 });
   }
 
   aggregate(pipeline) {

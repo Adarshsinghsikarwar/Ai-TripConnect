@@ -1,4 +1,4 @@
-import Trip from "../models/trip.model.js";
+import Trip from '../models/trip.model.js';
 
 class TripRepository {
   create(data) {
@@ -14,9 +14,7 @@ class TripRepository {
   }
 
   findOneAndUpdate(id, userId, update) {
-    return Trip.findOneAndUpdate({ _id: id, user: userId }, update, {
-      new: true,
-    });
+    return Trip.findOneAndUpdate({ _id: id, user: userId }, update, { new: true });
   }
 
   findOneAndDelete(id, userId) {

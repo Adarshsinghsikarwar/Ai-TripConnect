@@ -1,4 +1,5 @@
 node_modules
-.env
-trip-app-documentation.md
 POSTMAN_TESTING_GUIDE.md
+trip-app-documentation.md
+.env
+.env.example

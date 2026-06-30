@@ -1,4 +1,4 @@
-import Provider from "../models/provider.model.js";
+import Provider from '../models/provider.model.js';
 
 class ProviderRepository {
   create(data) {
@@ -6,7 +6,7 @@ class ProviderRepository {
   }
 
   findById(id) {
-    return Provider.findById(id).populate("user", "name email avatarUrl");
+    return Provider.findById(id).populate('user', 'name email avatarUrl');
   }
 
   findByUserId(userId) {
@@ -14,25 +14,14 @@ class ProviderRepository {
   }
 
   findOneAndUpdate(id, userId, update) {
-    return Provider.findOneAndUpdate({ _id: id, user: userId }, update, {
-      new: true,
-    });
+    return Provider.findOneAndUpdate({ _id: id, user: userId }, update, { new: true });
   }
 
-  async search({
-    serviceType,
-    city,
-    minPrice,
-    maxPrice,
-    lng,
-    lat,
-    radiusKm,
-    page = 1,
-    limit = 20,
-  }) {
-    const filter = { verificationStatus: "verified", isActive: true };
+  // Geospatial + filter search. lng/lat optional — if absent, falls back to plain filters.
+  async search({ serviceType, city, minPrice, maxPrice, lng, lat, radiusKm, page = 1, limit = 20 }) {
+    const filter = { verificationStatus: 'verified', isActive: true };
     if (serviceType) filter.serviceType = serviceType;
-    if (city) filter["location.city"] = new RegExp(`^${city}$`, "i");
+    if (city) filter['location.city'] = new RegExp(`^${city}$`, 'i');
     if (minPrice || maxPrice) {
       filter.pricePerDay = {};
       if (minPrice) filter.pricePerDay.$gte = Number(minPrice);
@@ -42,7 +31,7 @@ class ProviderRepository {
     if (lng && lat) {
       filter.location = {
         $near: {
-          $geometry: { type: "Point", coordinates: [Number(lng), Number(lat)] },
+          $geometry: { type: 'Point', coordinates: [Number(lng), Number(lat)] },
           $maxDistance: (Number(radiusKm) || 25) * 1000,
         },
       };
@@ -50,19 +39,11 @@ class ProviderRepository {
 
     const skip = (Math.max(1, page) - 1) * limit;
     const [results, total] = await Promise.all([
-      Provider.find(filter)
-        .populate("user", "name avatarUrl")
-        .skip(skip)
-        .limit(limit),
+      Provider.find(filter).populate('user', 'name avatarUrl').skip(skip).limit(limit),
       Provider.countDocuments(filter),
     ]);
 
-    return {
-      results,
-      total,
-      page: Number(page),
-      pages: Math.ceil(total / limit),
-    };
+    return { results, total, page: Number(page), pages: Math.ceil(total / limit) };
   }
 
   updateRatingStats(providerId, avgRating, reviewCount) {
@@ -70,18 +51,11 @@ class ProviderRepository {
   }
 
   setVerificationStatus(id, status) {
-    return Provider.findByIdAndUpdate(
-      id,
-      { verificationStatus: status },
-      { new: true }
-    );
+    return Provider.findByIdAndUpdate(id, { verificationStatus: status }, { new: true });
   }
 
   findPendingVerification() {
-    return Provider.find({ verificationStatus: "pending" }).populate(
-      "user",
-      "name email"
-    );
+    return Provider.find({ verificationStatus: 'pending' }).populate('user', 'name email');
   }
 }
 

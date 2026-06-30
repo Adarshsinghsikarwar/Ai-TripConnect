@@ -1,6 +1,5 @@
-import jwt from "jsonwebtoken";
-import { accessToken, refreshToken } from "../config/env.js";
-
+import jwt from 'jsonwebtoken';
+import { accessToken, refreshToken } from '../config/env.js';
 
 // Access token: short-lived, sent in response body, used as Bearer token
 function generateAccessToken(userId) {
@@ -9,6 +8,7 @@ function generateAccessToken(userId) {
   });
 }
 
+// Refresh token: long-lived, sent as httpOnly cookie, never read by frontend JS
 function generateRefreshToken(userId) {
   return jwt.sign({ sub: userId }, refreshToken.secret, {
     expiresIn: refreshToken.expiry,
@@ -24,6 +24,12 @@ function verifyRefreshToken(token) {
 }
 
 export {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+};
+export default {
   generateAccessToken,
   generateRefreshToken,
   verifyAccessToken,
