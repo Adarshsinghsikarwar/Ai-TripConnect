@@ -7,6 +7,7 @@ import providerRoutes from "./provider.routes.js";
 import bookingRoutes from "./booking.routes.js";
 import reviewRoutes from "./review.routes.js";
 import itineraryRoutes from "./itinerary.routes.js";
+import assistantRoutes from "./assistant.routes.js";
 
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.use("/analytics", analyticsRoutes);
 router.use("/providers", providerRoutes);
 router.use("/bookings", bookingRoutes);
 router.use("/reviews", reviewRoutes);
+router.use("/assistant", assistantRoutes);
 
 export default router;
