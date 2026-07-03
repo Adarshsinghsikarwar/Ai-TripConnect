@@ -1,7 +1,7 @@
 import reviewRepo from '../repositories/review.repository.js';
 import bookingRepo from '../repositories/booking.repository.js';
 import providerRepo from '../repositories/provider.repository.js';
-import ApiError from '../utils/apiError.js';
+import ApiError from '../utils/ApiError.js';
 import { chatCompletion, AINotConfiguredError } from '../utils/mistralClient.js';
 import logger from '../utils/logger.js';
 

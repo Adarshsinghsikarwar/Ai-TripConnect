@@ -1,5 +1,5 @@
 import tripRepo from '../repositories/trip.repository.js';
-import ApiError from '../utils/apiError.js';
+import ApiError from '../utils/ApiError.js';
 import { chatCompletion, AINotConfiguredError } from '../utils/mistralClient.js';
 import logger from '../utils/logger.js';
 

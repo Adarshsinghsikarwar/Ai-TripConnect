@@ -1,6 +1,6 @@
 import bookingService from '../services/booking.service.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/apiResponse.js';
+import ApiResponse from '../utils/ApiResponse.js';
 
 const createBooking = asyncHandler(async (req, res) => {
   const booking = await bookingService.createBookingRequest(req.userId, req.body);

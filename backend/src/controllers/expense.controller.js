@@ -1,6 +1,6 @@
 import expenseService from '../services/expense.service.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/apiResponse.js';
+import ApiResponse from '../utils/ApiResponse.js';
 
 const addExpense = asyncHandler(async (req, res) => {
   const expense = await expenseService.addExpense(req.userId, req.body);

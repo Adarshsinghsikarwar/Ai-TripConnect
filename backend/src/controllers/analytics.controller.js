@@ -1,6 +1,6 @@
 import analyticsService from '../services/analytics.service.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/apiResponse.js';
+import ApiResponse from '../utils/ApiResponse.js';
 
 const getAdminDashboard = asyncHandler(async (req, res) => {
   const [data] = await analyticsService.getAdminDashboard();

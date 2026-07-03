@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import userRepo from "../repositories/user.repository.js";
 import User from "../models/user.model.js";
-import ApiError from "../utils/apiError.js";
+import ApiError from "../utils/ApiError.js";
 import {
   generateAccessToken,
   generateRefreshToken,

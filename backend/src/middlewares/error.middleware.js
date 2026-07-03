@@ -1,4 +1,4 @@
-import ApiError from '../utils/apiError.js';
+import ApiError from '../utils/ApiError.js';
 import logger from '../utils/logger.js';
 import { nodeEnv } from '../config/env.js';
 

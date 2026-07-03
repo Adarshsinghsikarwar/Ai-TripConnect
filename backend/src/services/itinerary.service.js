@@ -1,6 +1,6 @@
 import itineraryRepo from '../repositories/itinerary.repository.js';
 import providerRepo from '../repositories/provider.repository.js';
-import ApiError from '../utils/apiError.js';
+import ApiError from '../utils/ApiError.js';
 import { runToolLoop, AINotConfiguredError } from '../utils/mistralClient.js';
 import logger from '../utils/logger.js';
 

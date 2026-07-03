@@ -1,7 +1,7 @@
 import sanitizeHtml from 'sanitize-html';
 import messageRepo from '../repositories/message.repository.js';
 import bookingRepo from '../repositories/booking.repository.js';
-import ApiError from '../utils/apiError.js';
+import ApiError from '../utils/ApiError.js';
 
 class MessageService {
   async send(senderId, bookingId, text) {

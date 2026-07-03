@@ -1,6 +1,6 @@
 import reviewService from '../services/review.service.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/apiResponse.js';
+import ApiResponse from '../utils/ApiResponse.js';
 
 const createReview = asyncHandler(async (req, res) => {
   const review = await reviewService.createReview(req.userId, req.body);

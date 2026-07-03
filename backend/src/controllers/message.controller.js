@@ -1,6 +1,6 @@
 import messageService from '../services/message.service.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/apiResponse.js';
+import ApiResponse from '../utils/ApiResponse.js';
 
 const sendMessage = asyncHandler(async (req, res) => {
   const text = req.body.text || req.body.content;

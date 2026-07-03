@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import { razorpay as cfg } from '../config/env.js';
-import ApiError from '../utils/apiError.js';
+import ApiError from '../utils/ApiError.js';
 
 const razorpay = new Razorpay({ key_id: cfg.keyId, key_secret: cfg.keySecret });
 

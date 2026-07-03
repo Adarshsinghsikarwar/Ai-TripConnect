@@ -3,7 +3,7 @@ import providerRepo from '../repositories/provider.repository.js';
 import userRepo from '../repositories/user.repository.js';
 import paymentService from './payment.service.js';
 import notificationService from './notification.service.js';
-import ApiError from '../utils/apiError.js';
+import ApiError from '../utils/ApiError.js';
 import { commissionPercent } from '../config/env.js';
 
 const RESPOND_WINDOW_HOURS = 24;

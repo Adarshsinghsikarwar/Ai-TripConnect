@@ -1,6 +1,6 @@
 import itineraryService from '../services/itinerary.service.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/apiResponse.js';
+import ApiResponse from '../utils/ApiResponse.js';
 
 const generateItinerary = asyncHandler(async (req, res) => {
   const { tripId, destination, days, budget, interests } = req.body;

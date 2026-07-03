@@ -1,6 +1,6 @@
 import tripService from '../services/trip.service.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/apiResponse.js';
+import ApiResponse from '../utils/ApiResponse.js';
 
 const createTrip = asyncHandler(async (req, res) => {
   const trip = await tripService.createTrip(req.userId, req.body);
