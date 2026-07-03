@@ -293,10 +293,6 @@ class AuthService {
       throw new ApiError(401, 'Email not registered. Please sign up first.');
     }
 
-    if (user.authProvider === 'google') {
-      throw new ApiError(401, 'This account is registered via Google OAuth. Please log in using Google.');
-    }
-
     // Generate a random 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes validity
@@ -336,6 +332,12 @@ class AuthService {
     fullUser.password = newPassword; // Automatically hashed by Mongoose schema pre-save hook
     fullUser.resetPasswordOtp = null;
     fullUser.resetPasswordOtpExpires = null;
+    
+    // If the user was registered via Google, allow local login by changing authProvider to local
+    if (fullUser.authProvider === 'google') {
+      fullUser.authProvider = 'local';
+    }
+    
     await fullUser.save();
 
     // Clear refresh tokens so they are logged out of all active sessions
