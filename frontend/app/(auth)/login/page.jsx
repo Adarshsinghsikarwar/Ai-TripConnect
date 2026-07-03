@@ -82,7 +82,7 @@ export default function LoginPage() {
             <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center">
               <Sparkles size={20} className="text-white" />
             </div>
-            <span className="font-bold text-white text-xl">AI TriConnect</span>
+            <span className="font-bold text-white text-xl">AI TripConnect</span>
           </Link>
           <h2 className="mt-6 text-2xl font-bold text-white">Welcome back</h2>
           <p className="mt-2 text-slate-400 text-sm">Sign in to your account to continue</p>

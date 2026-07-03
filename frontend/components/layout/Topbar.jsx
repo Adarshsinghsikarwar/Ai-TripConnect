@@ -25,7 +25,7 @@ export default function Topbar({ onMenuClick, title }) {
 
       {/* Page title */}
       <h1 className="font-semibold text-slate-800 text-base flex-1 truncate">
-        {title || "AI TriConnect"}
+        {title || "AI TripConnect"}
       </h1>
 
       {/* Right side actions */}

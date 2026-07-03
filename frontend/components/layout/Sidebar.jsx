@@ -86,7 +86,7 @@ export default function Sidebar({ open, onClose }) {
               <Sparkles size={16} className="text-white" />
             </div>
             <div>
-              <span className="font-bold text-white text-sm leading-none">AI TriConnect</span>
+              <span className="font-bold text-white text-sm leading-none">AI TripConnect</span>
               <span className="block text-xs text-surface-muted">Platform</span>
             </div>
           </Link>

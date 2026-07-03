@@ -77,7 +77,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center">
               <Sparkles size={16} className="text-white" />
             </div>
-            <span className="font-bold text-white">AI TriConnect</span>
+            <span className="font-bold text-white">AI TripConnect</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link
@@ -110,7 +110,7 @@ export default function LandingPage() {
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
             Plan Smarter Trips with{" "}
-            <span className="text-gradient">AI TriConnect</span>
+            <span className="text-gradient">AI TripConnect</span>
           </h1>
 
           <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10">
@@ -194,7 +194,7 @@ export default function LandingPage() {
             Ready to Plan Your Next Adventure?
           </h2>
           <p className="text-slate-400 mb-8">
-            Join AI TriConnect and let our AI plan your perfect trip while you
+            Join AI TripConnect and let our AI plan your perfect trip while you
             connect with the best local providers.
           </p>
           <Link
@@ -209,7 +209,7 @@ export default function LandingPage() {
 
       {/* ── Footer ── */}
       <footer className="border-t border-surface-border py-8 px-4 text-center text-slate-500 text-sm">
-        <p>© 2025 AI TriConnect Platform. Built with ❤️ for Indian travelers.</p>
+        <p>© 2025 AI TripConnect Platform. Built with ❤️ for Indian travelers.</p>
       </footer>
     </div>
   );

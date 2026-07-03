@@ -52,7 +52,7 @@ function VerifyOtpContent() {
       const res = await authApi.verifyOtp({ email, otp: code });
       const { user, accessToken } = res.data.data;
       login(user, accessToken);
-      toast.success("Email verified! Welcome to AI TriConnect 🎉");
+      toast.success("Email verified! Welcome to AI TripConnect 🎉");
       router.push("/dashboard");
     } catch (err) {
       toast.error(err.response?.data?.message || "Invalid or expired OTP");
@@ -81,7 +81,7 @@ function VerifyOtpContent() {
             <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center">
               <Sparkles size={20} className="text-white" />
             </div>
-            <span className="font-bold text-white text-xl">AI TriConnect</span>
+            <span className="font-bold text-white text-xl">AI TripConnect</span>
           </Link>
           <div className="mt-6 w-14 h-14 rounded-full bg-brand-500/20 flex items-center justify-center mx-auto mb-4">
             <Mail className="text-brand-400" size={24} />
