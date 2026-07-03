@@ -120,7 +120,19 @@ class AuthService {
         logger.error(`Failed to send login alert: ${err.message}`),
       );
 
-    return this._issueTokenPair(user._id);
+    const tokenPair = await this._issueTokenPair(user._id);
+    return {
+      ...tokenPair,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        roles: user.roles,
+        isEmailVerified: user.isEmailVerified,
+        avatarUrl: user.avatarUrl,
+        phone: user.phone,
+      },
+    };
   }
 
   // Used by the Google OAuth callback — no password check, identity is already
@@ -174,7 +186,19 @@ class AuthService {
       );
     }
 
-    return this._issueTokenPair(user._id);
+    const tokenPair = await this._issueTokenPair(user._id);
+    return {
+      ...tokenPair,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        roles: user.roles,
+        isEmailVerified: user.isEmailVerified,
+        avatarUrl: user.avatarUrl,
+        phone: user.phone,
+      },
+    };
   }
 
   async logout(userId) {
@@ -211,7 +235,21 @@ class AuthService {
     fullUser.verificationOtpExpires = null;
     await fullUser.save();
 
-    return { message: "Email verified successfully. You can now log in." };
+    const tokenPair = await this._issueTokenPair(fullUser._id);
+
+    return {
+      ...tokenPair,
+      user: {
+        _id: fullUser._id,
+        name: fullUser.name,
+        email: fullUser.email,
+        roles: fullUser.roles,
+        isEmailVerified: fullUser.isEmailVerified,
+        avatarUrl: fullUser.avatarUrl,
+        phone: fullUser.phone,
+      },
+      message: "Email verified successfully.",
+    };
   }
 
   async resendOtp({ email }) {

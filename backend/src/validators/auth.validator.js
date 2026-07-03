@@ -79,6 +79,20 @@ const resetPasswordValidator = [
     .withMessage("Password must contain a letter"),
 ];
 
+const updateProfileValidator = [
+  body("name").optional().trim().notEmpty().isLength({ max: 100 }),
+  body("phone")
+    .optional()
+    .trim()
+    .matches(/^[6-9]\d{9}$/)
+    .withMessage("Enter a valid 10-digit Indian mobile number"),
+  body("avatarUrl")
+    .optional()
+    .trim()
+    .isURL()
+    .withMessage("avatarUrl must be a valid URL"),
+];
+
 export {
   registerValidator,
   loginValidator,
@@ -86,4 +100,5 @@ export {
   resendOtpValidator,
   forgotPasswordValidator,
   resetPasswordValidator,
+  updateProfileValidator,
 };

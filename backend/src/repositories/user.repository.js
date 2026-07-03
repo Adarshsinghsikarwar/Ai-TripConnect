@@ -1,4 +1,4 @@
-import User from '../models/user.model.js';
+import User from "../models/user.model.js";
 
 class UserRepository {
   create(data) {
@@ -7,12 +7,18 @@ class UserRepository {
 
   findByEmail(email, withSensitive = false) {
     const query = User.findOne({ email });
-    return withSensitive ? query.select('+password +refreshTokenHash +failedLoginAttempts +lockUntil') : query;
+    return withSensitive
+      ? query.select(
+          "+password +refreshTokenHash +failedLoginAttempts +lockUntil"
+        )
+      : query;
   }
 
   findById(id, withSensitive = false) {
     const query = User.findById(id);
-    return withSensitive ? query.select('+refreshTokenHash +failedLoginAttempts +lockUntil') : query;
+    return withSensitive
+      ? query.select("+refreshTokenHash +failedLoginAttempts +lockUntil")
+      : query;
   }
 
   setRefreshTokenHash(userId, hash) {
@@ -24,21 +30,39 @@ class UserRepository {
   }
 
   incrementFailedLogins(userId) {
-    return User.findByIdAndUpdate(userId, { $inc: { failedLoginAttempts: 1 } }, { new: true }).select(
-      '+failedLoginAttempts +lockUntil'
-    );
+    return User.findByIdAndUpdate(
+      userId,
+      { $inc: { failedLoginAttempts: 1 } },
+      { new: true }
+    ).select("+failedLoginAttempts +lockUntil");
   }
 
   lockAccount(userId, until) {
-    return User.findByIdAndUpdate(userId, { lockUntil: until, failedLoginAttempts: 0 });
+    return User.findByIdAndUpdate(userId, {
+      lockUntil: until,
+      failedLoginAttempts: 0,
+    });
   }
 
   resetFailedLogins(userId) {
-    return User.findByIdAndUpdate(userId, { failedLoginAttempts: 0, lockUntil: null });
+    return User.findByIdAndUpdate(userId, {
+      failedLoginAttempts: 0,
+      lockUntil: null,
+    });
   }
 
   addRole(userId, role) {
-    return User.findByIdAndUpdate(userId, { $addToSet: { roles: role } }, { new: true });
+    return User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { roles: role } },
+      { new: true }
+    );
+  }
+  updateProfile(userId, update) {
+    return User.findByIdAndUpdate(userId, update, {
+      new: true,
+      runValidators: true,
+    });
   }
 }
 

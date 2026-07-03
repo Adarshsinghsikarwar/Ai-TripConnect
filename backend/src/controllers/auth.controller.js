@@ -12,14 +12,34 @@ const cookieOptions = {
 
 function sendTokenResponse(
   res,
-  { accessToken, refreshToken, userId },
+  { accessToken, refreshToken, userId, user },
   message,
   status = 200
 ) {
   res
     .cookie("refreshToken", refreshToken, cookieOptions)
     .status(status)
-    .json(new ApiResponse(status, { accessToken, userId }, message));
+    .json(
+      new ApiResponse(
+        status,
+        {
+          accessToken,
+          userId: userId || user?._id || user?.id,
+          user: user
+            ? {
+                _id: user._id || user.id,
+                name: user.name,
+                email: user.email,
+                roles: user.roles,
+                isEmailVerified: user.isEmailVerified,
+                avatarUrl: user.avatarUrl,
+                phone: user.phone,
+              }
+            : undefined,
+        },
+        message
+      )
+    );
 }
 
 const register = asyncHandler(async (req, res) => {
@@ -28,8 +48,8 @@ const register = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
-  const tokens = await authService.login(req.body);
-  sendTokenResponse(res, tokens, "Logged in successfully");
+  const result = await authService.login(req.body);
+  sendTokenResponse(res, result, "Logged in successfully");
 });
 
 // GET /auth/google/callback — passport already authenticated the user (session: false),
@@ -45,7 +65,7 @@ const googleCallback = asyncHandler(async (req, res) => {
 
 const verifyOtp = asyncHandler(async (req, res) => {
   const result = await authService.verifyOtp(req.body);
-  res.status(200).json(new ApiResponse(200, null, result.message));
+  sendTokenResponse(res, result, result.message, 200);
 });
 
 const resendOtp = asyncHandler(async (req, res) => {
