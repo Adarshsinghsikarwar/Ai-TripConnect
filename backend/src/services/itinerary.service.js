@@ -1,8 +1,8 @@
-import itineraryRepo from '../repositories/itinerary.repository.js';
-import providerRepo from '../repositories/provider.repository.js';
-import ApiError from '../utils/ApiError.js';
-import { runToolLoop, AINotConfiguredError } from '../utils/mistralClient.js';
-import logger from '../utils/logger.js';
+import itineraryRepo from "../repositories/itinerary.repository.js";
+import providerRepo from "../repositories/provider.repository.js";
+import ApiError from "../utils/apiError.js";
+import { runToolLoop, AINotConfiguredError } from "../utils/mistralClient.js";
+import logger from "../utils/logger.js";
 
 const SYSTEM_PROMPT = `You are a travel itinerary planner. Given a destination, number of days,
 budget, and interests, produce a structured day-by-day plan.
@@ -24,27 +24,43 @@ matching this exact shape:
 
 const TOOLS = [
   {
-    type: 'function',
+    type: "function",
     function: {
-      name: 'search_providers',
-      description: 'Search verified local service providers (guides, drivers, homestays) in our marketplace by city and optional service type.',
+      name: "search_providers",
+      description:
+        "Search verified local service providers (guides, drivers, homestays) in our marketplace by city and optional service type.",
       parameters: {
-        type: 'object',
+        type: "object",
         properties: {
-          city: { type: 'string', description: 'Destination city to search in' },
+          city: {
+            type: "string",
+            description: "Destination city to search in",
+          },
           serviceType: {
-            type: 'string',
-            enum: ['guide', 'driver', 'homestay', 'planner', 'photographer', 'other'],
+            type: "string",
+            enum: [
+              "guide",
+              "driver",
+              "homestay",
+              "planner",
+              "photographer",
+              "other",
+            ],
           },
         },
-        required: ['city'],
+        required: ["city"],
       },
     },
   },
 ];
 
 async function searchProvidersTool({ city, serviceType }) {
-  const { results } = await providerRepo.search({ city, serviceType, page: 1, limit: 5 });
+  const { results } = await providerRepo.search({
+    city,
+    serviceType,
+    page: 1,
+    limit: 5,
+  });
   return results.map((p) => ({
     id: p._id,
     title: p.title,
@@ -55,13 +71,17 @@ async function searchProvidersTool({ city, serviceType }) {
 }
 
 class ItineraryService {
-  async generate(userId, tripId, { destination, days, budget, interests = [] }) {
+  async generate(
+    userId,
+    tripId,
+    { destination, days, budget, interests = [] }
+  ) {
     const messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
+      { role: "system", content: SYSTEM_PROMPT },
       {
-        role: 'user',
+        role: "user",
         content: `Destination: ${destination}\nDays: ${days}\nBudget (total, INR): ${budget}\nInterests: ${
-          interests.join(', ') || 'general sightseeing'
+          interests.join(", ") || "general sightseeing"
         }`,
       },
     ];
@@ -75,24 +95,35 @@ class ItineraryService {
       });
     } catch (err) {
       if (err instanceof AINotConfiguredError) {
-        throw new ApiError(503, 'AI itinerary generation is not configured on this server');
+        throw new ApiError(
+          503,
+          "AI itinerary generation is not configured on this server"
+        );
       }
       logger.error(`Itinerary generation failed: ${err.message}`);
-      throw new ApiError(502, 'AI itinerary service is temporarily unavailable');
+      throw new ApiError(
+        502,
+        "AI itinerary service is temporarily unavailable"
+      );
     }
 
-    if (!finalText) throw new ApiError(502, 'AI did not return a final itinerary in time');
+    if (!finalText)
+      throw new ApiError(502, "AI did not return a final itinerary in time");
 
     let parsed;
     try {
-      parsed = JSON.parse(finalText.replace(/```json|```/g, '').trim());
+      parsed = JSON.parse(finalText.replace(/```json|```/g, "").trim());
     } catch {
-      throw new ApiError(502, 'AI returned an unparseable itinerary, please try again');
+      throw new ApiError(
+        502,
+        "AI returned an unparseable itinerary, please try again"
+      );
     }
 
     for (const day of parsed.days || []) {
       for (const stop of day.stops || []) {
-        if (stop.suggestedProviderId) stop.suggestedProvider = stop.suggestedProviderId;
+        if (stop.suggestedProviderId)
+          stop.suggestedProvider = stop.suggestedProviderId;
       }
     }
 

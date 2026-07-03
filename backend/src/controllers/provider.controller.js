@@ -1,7 +1,7 @@
 import providerService from '../services/provider.service.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiResponse from '../utils/apiResponse.js';
-import ApiError from '../utils/ApiError.js';
+import ApiError from '../utils/apiError.js';
 
 const registerProvider = asyncHandler(async (req, res) => {
   const provider = await providerService.registerProvider(req.userId, req.body);
