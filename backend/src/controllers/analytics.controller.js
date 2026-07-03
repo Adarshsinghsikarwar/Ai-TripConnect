@@ -1,6 +1,6 @@
-import analyticsService from '../services/analytics.service.js';
-import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/ApiResponse.js';
+import analyticsService from "../services/analytics.service.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 const getAdminDashboard = asyncHandler(async (req, res) => {
   const [data] = await analyticsService.getAdminDashboard();
@@ -18,4 +18,8 @@ const getPendingVerifications = asyncHandler(async (req, res) => {
 });
 
 export { getAdminDashboard, getTopRatedProviders, getPendingVerifications };
-export default { getAdminDashboard, getTopRatedProviders, getPendingVerifications };
+export default {
+  getAdminDashboard,
+  getTopRatedProviders,
+  getPendingVerifications,
+};

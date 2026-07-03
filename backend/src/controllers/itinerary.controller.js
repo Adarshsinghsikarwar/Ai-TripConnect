@@ -1,11 +1,16 @@
-import itineraryService from '../services/itinerary.service.js';
-import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/ApiResponse.js';
+import itineraryService from "../services/itinerary.service.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 const generateItinerary = asyncHandler(async (req, res) => {
   const { tripId, destination, days, budget, interests } = req.body;
-  const itinerary = await itineraryService.generate(req.userId, tripId, { destination, days, budget, interests });
-  res.status(201).json(new ApiResponse(201, itinerary, 'Itinerary generated'));
+  const itinerary = await itineraryService.generate(req.userId, tripId, {
+    destination,
+    days,
+    budget,
+    interests,
+  });
+  res.status(201).json(new ApiResponse(201, itinerary, "Itinerary generated"));
 });
 
 const getItineraryForTrip = asyncHandler(async (req, res) => {

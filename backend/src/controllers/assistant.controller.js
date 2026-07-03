@@ -1,6 +1,6 @@
-import assistantService from '../services/assistant.service.js';
-import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/ApiResponse.js';
+import assistantService from "../services/assistant.service.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 // req.userId comes from the requireAuth middleware (decoded from the JWT
 // access token). We pass it into the service so get_booking_status can ONLY

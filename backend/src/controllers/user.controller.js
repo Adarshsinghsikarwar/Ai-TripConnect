@@ -1,6 +1,6 @@
 import userRepo from "../repositories/user.repository.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import ApiResponse from "../utils/ApiResponse.js";
+import ApiResponse from "../utils/apiResponse.js";
 import ApiError from "../utils/apiError.js";
 
 // GET /api/v1/users/me — returns the logged-in user's own profile

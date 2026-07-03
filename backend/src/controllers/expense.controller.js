@@ -1,10 +1,10 @@
-import expenseService from '../services/expense.service.js';
-import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/ApiResponse.js';
+import expenseService from "../services/expense.service.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 const addExpense = asyncHandler(async (req, res) => {
   const expense = await expenseService.addExpense(req.userId, req.body);
-  res.status(201).json(new ApiResponse(201, expense, 'Expense added'));
+  res.status(201).json(new ApiResponse(201, expense, "Expense added"));
 });
 
 const getTripExpenses = asyncHandler(async (req, res) => {
@@ -23,4 +23,9 @@ const getMonthlyTrend = asyncHandler(async (req, res) => {
 });
 
 export { addExpense, getTripExpenses, getCategoryBreakdown, getMonthlyTrend };
-export default { addExpense, getTripExpenses, getCategoryBreakdown, getMonthlyTrend };
+export default {
+  addExpense,
+  getTripExpenses,
+  getCategoryBreakdown,
+  getMonthlyTrend,
+};
