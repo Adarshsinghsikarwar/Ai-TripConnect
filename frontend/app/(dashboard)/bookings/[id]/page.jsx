@@ -140,7 +140,7 @@ export default function BookingDetailPage() {
           toast.error("Payment verification failed");
         }
       },
-      prefill: { name: user?.name, email: user?.email },
+      prefill: { name: user?.name, email: user?.email, contact: user?.phone || "9999999999" },
       theme: { color: "#6366f1" },
     };
     new window.Razorpay(options).open();
@@ -150,6 +150,7 @@ export default function BookingDetailPage() {
   if (error || !booking) return <ErrorMessage message={error || "Booking not found."} />;
 
   const stepIdx = STEPS.indexOf(booking.status);
+  const isTraveler = booking.traveler?._id === user?._id || booking.traveler === user?._id;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -203,7 +204,7 @@ export default function BookingDetailPage() {
 
             {/* Actions */}
             <div className="mt-4 space-y-2">
-              {booking.status === "confirmed" && booking.payment?.status === "pending" && (
+              {booking.status === "confirmed" && booking.payment?.status === "pending" && isTraveler && (
                 <button onClick={handleRazorpay}
                   className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-xl text-sm font-semibold transition-colors">
                   <CreditCard size={16} /> Pay Now
