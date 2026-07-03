@@ -4,7 +4,7 @@
  * Redirect unauthenticated users to /login.
  * Wrap any page that requires login with this component.
  */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
@@ -12,8 +12,15 @@ import LoadingSpinner from "@/components/shared/LoadingSpinner";
 export default function ProtectedRoute({ children, requiredRole }) {
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     if (!isAuthenticated) {
       router.replace("/login");
       return;
@@ -21,9 +28,9 @@ export default function ProtectedRoute({ children, requiredRole }) {
     if (requiredRole && !user?.roles?.includes(requiredRole)) {
       router.replace("/dashboard");
     }
-  }, [isAuthenticated, user, requiredRole, router]);
+  }, [mounted, isAuthenticated, user, requiredRole, router]);
 
-  if (!isAuthenticated) {
+  if (!mounted || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
         <LoadingSpinner size="lg" />

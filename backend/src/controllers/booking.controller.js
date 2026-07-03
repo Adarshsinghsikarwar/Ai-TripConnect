@@ -8,7 +8,8 @@ const createBooking = asyncHandler(async (req, res) => {
 });
 
 const respondToRequest = asyncHandler(async (req, res) => {
-  const booking = await bookingService.respondToRequest(req.params.id, req.userId, req.body.decision);
+  const decision = req.body.decision || req.body.action;
+  const booking = await bookingService.respondToRequest(req.params.id, req.userId, decision);
   res.status(200).json(new ApiResponse(200, booking, `Booking ${booking.status}`));
 });
 
@@ -37,6 +38,11 @@ const myBookingsAsProvider = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, bookings));
 });
 
+const getBookingDetail = asyncHandler(async (req, res) => {
+  const booking = await bookingService.getBookingDetail(req.params.id, req.userId);
+  res.status(200).json(new ApiResponse(200, booking));
+});
+
 export {
   createBooking,
   respondToRequest,
@@ -45,6 +51,7 @@ export {
   markCompleted,
   myBookingsAsTraveler,
   myBookingsAsProvider,
+  getBookingDetail,
 };
 export default {
   createBooking,
@@ -54,4 +61,5 @@ export default {
   markCompleted,
   myBookingsAsTraveler,
   myBookingsAsProvider,
+  getBookingDetail,
 };

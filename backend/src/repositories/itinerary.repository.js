@@ -6,7 +6,7 @@ class ItineraryRepository {
   }
 
   findByTrip(tripId) {
-    return Itinerary.findOne({ trip: tripId });
+    return Itinerary.findOne({ trip: tripId }).populate('days.stops.suggestedProvider');
   }
 
   findByIdForUser(id, userId) {

@@ -125,6 +125,11 @@ export default function ProviderProfilePage() {
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h1 className="text-xl font-bold text-slate-800">{provider.title}</h1>
+                {provider.user?.name && (
+                  <p className="text-xs font-semibold text-brand-600 mt-0.5">
+                    Hosted by {provider.user.name}
+                  </p>
+                )}
                 <p className="text-slate-500 flex items-center gap-1.5 mt-1">
                   <MapPin size={14} /> {provider.location?.city || provider.location?.address || "India"}
                 </p>

@@ -9,8 +9,8 @@ class MessageService {
     if (!booking) throw new ApiError(404, 'Booking not found');
 
     const isParticipant =
-      String(booking.traveler) === String(senderId) ||
-      String(booking.provider.user._id || booking.provider.user) === String(senderId);
+      String(booking.traveler._id || booking.traveler) === String(senderId) ||
+      String(booking.provider.user?._id || booking.provider.user || booking.provider) === String(senderId);
     if (!isParticipant) throw new ApiError(403, 'You are not part of this booking conversation');
 
     // Strip ALL HTML — chat is plain text only. Prevents stored XSS via chat messages.
@@ -25,8 +25,8 @@ class MessageService {
     if (!booking) throw new ApiError(404, 'Booking not found');
 
     const isParticipant =
-      String(booking.traveler) === String(userId) ||
-      String(booking.provider.user._id || booking.provider.user) === String(userId);
+      String(booking.traveler._id || booking.traveler) === String(userId) ||
+      String(booking.provider.user?._id || booking.provider.user || booking.provider) === String(userId);
     if (!isParticipant) throw new ApiError(403, 'Not authorized to view this conversation');
 
     await messageRepo.markReadForUser(bookingId, userId);

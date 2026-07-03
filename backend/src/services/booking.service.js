@@ -53,12 +53,15 @@ class BookingService {
   async respondToRequest(bookingId, providerUserId, decision) {
     const booking = await bookingRepo.findById(bookingId);
     if (!booking) throw new ApiError(404, 'Booking not found');
-    if (String(booking.provider.user._id || booking.provider.user) !== String(providerUserId)) {
+    
+    const isProvider = String(booking.provider.user?._id || booking.provider.user || booking.provider) === String(providerUserId);
+    if (!isProvider) {
       throw new ApiError(403, 'You do not have permission to respond to this booking');
     }
     if (booking.status !== 'requested') throw new ApiError(409, 'This booking is no longer pending');
 
-    const newStatus = decision === 'accept' ? 'confirmed' : 'rejected';
+    const isAccept = decision === 'accept' || decision === 'accepted' || decision === 'confirmed';
+    const newStatus = isAccept ? 'confirmed' : 'rejected';
     // Atomic — guards against a double-click or duplicate request racing this update.
     const updated = await bookingRepo.updateStatusIfCurrent(bookingId, 'requested', newStatus);
     if (!updated) throw new ApiError(409, 'Booking status changed concurrently, please retry');
@@ -169,6 +172,19 @@ class BookingService {
     const provider = await providerRepo.findByUserId(providerUserId);
     if (!provider) throw new ApiError(404, 'No provider profile found');
     return bookingRepo.findByProvider(provider._id);
+  }
+
+  async getBookingDetail(bookingId, userId) {
+    const booking = await bookingRepo.findById(bookingId);
+    if (!booking) throw new ApiError(404, 'Booking not found');
+
+    const isTraveler = String(booking.traveler._id || booking.traveler) === String(userId);
+    const isProvider = String(booking.provider.user?._id || booking.provider.user || booking.provider) === String(userId);
+    if (!isTraveler && !isProvider) {
+      throw new ApiError(403, 'Not authorized to view this booking');
+    }
+
+    return booking;
   }
 }
 

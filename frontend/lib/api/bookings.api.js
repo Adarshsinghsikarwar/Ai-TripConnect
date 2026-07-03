@@ -14,6 +14,9 @@ export const bookingsApi = {
   /** Provider: get all booking requests for me */
   getMyBookingsAsProvider: () => api.get("/bookings/mine/provider"),
 
+  /** Get single booking by ID */
+  getBookingById: (id) => api.get(`/bookings/${id}`),
+
   /** Provider: accept or reject a booking request */
   respondToBooking: (id, action) =>
     api.patch(`/bookings/${id}/respond`, { action }),  // action: "accepted" | "rejected"

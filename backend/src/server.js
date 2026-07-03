@@ -14,6 +14,7 @@ const io = new Server(httpServer, {
   cors: { origin: clientUrl, credentials: true },
 });
 registerChatHandlers(io);
+app.set('io', io);
 
 connectDB().then(() => {
   httpServer.listen(port, () => {

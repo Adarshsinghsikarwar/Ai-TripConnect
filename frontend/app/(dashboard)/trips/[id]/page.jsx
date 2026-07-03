@@ -5,6 +5,7 @@
  */
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   MapPin, Calendar, DollarSign, Sparkles, Plus, Wand2,
   ArrowLeft, ChevronDown, ChevronUp, Clock, Wallet
@@ -367,6 +368,27 @@ export default function TripDetailPage() {
                               {stop.estimatedCost && <span>💰 {formatCurrency(stop.estimatedCost)}</span>}
                             </div>
                             {stop.notes && <p className="text-xs text-slate-500 mt-1 italic">{stop.notes}</p>}
+                            {stop.suggestedProvider && (
+                              <div className="mt-2 p-3 bg-brand-50 border border-brand-100 rounded-xl flex items-center justify-between gap-4 max-w-md">
+                                <div className="min-w-0">
+                                  <p className="text-[10px] font-bold text-brand-600 uppercase tracking-wider capitalize">
+                                    Recommended {stop.suggestedProvider.serviceType}
+                                  </p>
+                                  <p className="text-xs font-semibold text-slate-800 truncate mt-0.5">
+                                    {stop.suggestedProvider.title}
+                                  </p>
+                                  <p className="text-[10px] text-light-muted mt-0.5">
+                                    Price: {formatCurrency(stop.suggestedProvider.pricePerDay)}/day · ★ {stop.suggestedProvider.avgRating || "New"}
+                                  </p>
+                                </div>
+                                <Link
+                                  href={`/providers`}
+                                  className="text-xs bg-brand-500 hover:bg-brand-600 text-white px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap flex-shrink-0"
+                                >
+                                  Book Now
+                                </Link>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}

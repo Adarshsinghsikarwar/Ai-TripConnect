@@ -46,13 +46,11 @@ export default function BookingDetailPage() {
       setLoading(true);
       try {
         const [bRes, mRes] = await Promise.all([
-          bookingsApi.getMyBookingsAsTraveler().then((r) =>
-            ({ data: { data: r.data.data?.find((b) => b._id === id) } })
-          ),
+          bookingsApi.getBookingById(id),
           messagesApi.getThread(id),
         ]);
         setBooking(bRes.data.data);
-        setMessages(mRes.data.data || []);
+        setMessages((mRes.data.data || []).slice().reverse());
       } catch {
         setError("Failed to load booking.");
       } finally {
@@ -66,7 +64,10 @@ export default function BookingDetailPage() {
     socketRef.current = socket;
     socket.emit("join_booking", id);
     socket.on("new_message", (msg) => {
-      setMessages((prev) => [...prev, msg]);
+      setMessages((prev) => {
+        if (prev.some((m) => m._id === msg._id)) return prev;
+        return [...prev, msg];
+      });
     });
     return () => {
       socket.off("new_message");
@@ -84,7 +85,10 @@ export default function BookingDetailPage() {
     setMsgLoading(true);
     try {
       const res = await messagesApi.sendMessage(id, newMsg.trim());
-      setMessages((prev) => [...prev, res.data.data]);
+      setMessages((prev) => {
+        if (prev.some((m) => m._id === res.data.data?._id)) return prev;
+        return [...prev, res.data.data];
+      });
       setNewMsg("");
     } catch {
       toast.error("Failed to send message");
@@ -120,7 +124,7 @@ export default function BookingDetailPage() {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
       amount: booking.amount * 100,
       currency: "INR",
-      order_id: booking.payment.razorpayOrderId,
+      order_id: booking.payment?.razorpayOrderId,
       name: "AI TriConnect",
       description: `Booking: ${booking.provider?.title}`,
       handler: async (response) => {
@@ -237,7 +241,7 @@ export default function BookingDetailPage() {
                       <div className={`max-w-[75%] px-3 py-2 rounded-xl text-sm ${
                         isMe ? "bg-brand-500 text-white rounded-br-sm" : "bg-slate-100 text-slate-700 rounded-bl-sm"
                       }`}>
-                        {msg.content}
+                        {msg.text}
                       </div>
                     </div>
                   );

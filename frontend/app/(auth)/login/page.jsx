@@ -3,7 +3,7 @@
  * app/(auth)/login/page.jsx
  * Login page — email/password + Google OAuth button.
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -24,9 +24,20 @@ const schema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAuthStore();
+  const { login, isAuthenticated } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && isAuthenticated) {
+      router.replace("/dashboard");
+    }
+  }, [mounted, isAuthenticated, router]);
 
   const {
     register,
