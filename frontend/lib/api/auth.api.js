@@ -31,5 +31,5 @@ export const authApi = {
 
   /** Build the Google OAuth URL (redirect browser to this) */
   googleOAuthUrl: () =>
-    `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"}/auth/google`,
+    `${process.env.NEXT_PUBLIC_API_URL || "https://travel-app-backend-8xlt.onrender.com/api/v1"}/auth/google`,
 };

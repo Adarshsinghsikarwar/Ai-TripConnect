@@ -17,7 +17,7 @@ import useAuthStore from "@/store/useAuthStore";
 // ── Base URL ────────────────────────────────────────────────────────────────
 // Set NEXT_PUBLIC_API_URL in .env.local to point to your backend.
 const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+  process.env.NEXT_PUBLIC_API_URL || "https://travel-app-backend-8xlt.onrender.com/api/v1";
 
 // ── Create the Axios instance ────────────────────────────────────────────────
 const api = axios.create({
