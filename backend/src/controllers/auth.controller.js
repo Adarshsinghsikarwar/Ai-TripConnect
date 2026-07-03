@@ -1,6 +1,6 @@
 import authService from "../services/auth.service.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import ApiResponse from "../utils/apiResponse.js";
+import ApiResponse from "../utils/ApiResponse.js";
 import { nodeEnv, clientUrl } from "../config/env.js";
 
 const cookieOptions = {
