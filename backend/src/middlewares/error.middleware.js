@@ -13,12 +13,10 @@ function errorMiddleware(err, req, res, next) {
 
   // Known Mongoose/Mongo error shapes get a clean message instead of leaking internals
   if (err.code === 11000) {
-    return res
-      .status(409)
-      .json({
-        success: false,
-        message: "Duplicate value — resource already exists",
-      });
+    return res.status(409).json({
+      success: false,
+      message: "Duplicate value — resource already exists",
+    });
   }
   if (err.name === "ValidationError") {
     return res.status(400).json({ success: false, message: err.message });
