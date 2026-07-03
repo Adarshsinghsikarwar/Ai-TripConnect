@@ -102,6 +102,7 @@ class BookingService {
     booking.payment.razorpayPaymentId = paymentId;
     booking.payment.status = 'paid';
     booking.payment.paidAt = new Date();
+    booking.status = 'ongoing';
     await booking.save();
 
     await notificationService.notify({
@@ -125,6 +126,7 @@ class BookingService {
     booking.payment.razorpayPaymentId = paymentId;
     booking.payment.status = 'paid';
     booking.payment.paidAt = new Date();
+    booking.status = 'ongoing';
     await booking.save();
   }
 
@@ -159,8 +161,8 @@ class BookingService {
     if (String(booking.provider.user._id || booking.provider.user) !== String(providerUserId)) {
       throw new ApiError(403, 'You do not have permission to manage this booking');
     }
-    const updated = await bookingRepo.updateStatusIfCurrent(bookingId, 'confirmed', 'completed');
-    if (!updated) throw new ApiError(409, 'Booking must be confirmed before it can be completed');
+    const updated = await bookingRepo.updateStatusIfCurrent(bookingId, 'ongoing', 'completed');
+    if (!updated) throw new ApiError(409, 'Booking must be ongoing (paid) before it can be completed');
     return updated;
   }
 

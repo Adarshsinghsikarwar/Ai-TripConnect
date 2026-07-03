@@ -15,12 +15,12 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "AI TriConnect Platform",
+  title: "AI TripConnect Platform",
   description:
     "Plan your perfect trip with AI-powered itineraries, connect with verified local guides, drivers, and homestays across India.",
   keywords: ["travel", "trip planning", "AI itinerary", "local guides", "India travel"],
   openGraph: {
-    title: "AI TriConnect Platform",
+    title: "AI TripConnect Platform",
     description: "AI-powered trip planning and travel service marketplace",
     type: "website",
   },
