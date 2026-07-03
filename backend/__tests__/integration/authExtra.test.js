@@ -110,4 +110,55 @@ describe("Authentication OTP & Password Reset Flows", () => {
       .send({ email: validUser.email, password: newPassword });
     expect(newLoginSuccess.status).toBe(200);
   });
+
+  it("allows Google OAuth users to use forgot-password to set a password and log in manually", async () => {
+    // 1. Create a google-authenticated user in the DB
+    const googleUser = await mongoose.model("User").create({
+      name: "Google User",
+      email: "googleuser@example.com",
+      googleId: "123456789",
+      password: "some-random-password-hash",
+      isEmailVerified: true,
+      authProvider: "google",
+    });
+
+    // 2. Direct password login should fail because authProvider is 'google'
+    const initialLogin = await request(app)
+      .post("/api/v1/auth/login")
+      .send({ email: "googleuser@example.com", password: "some-password" });
+    expect(initialLogin.status).toBe(401);
+    expect(initialLogin.body.message).toMatch(/Google OAuth/i);
+
+    // 3. Forgot Password should succeed (no longer throws error for Google user)
+    const forgotRes = await request(app)
+      .post("/api/v1/auth/forgot-password")
+      .send({ email: "googleuser@example.com" });
+    expect(forgotRes.status).toBe(200);
+
+    // Retrieve the reset password OTP
+    const userDocForReset = await mongoose.model("User").findOne({ email: "googleuser@example.com" }).select("+resetPasswordOtp +resetPasswordOtpExpires");
+    expect(userDocForReset.resetPasswordOtp).toBeDefined();
+
+    // 4. Reset password to set a manual password
+    const newPassword = "NewSecurePassword@123";
+    const resetRes = await request(app)
+      .post("/api/v1/auth/reset-password")
+      .send({
+        email: "googleuser@example.com",
+        otp: userDocForReset.resetPasswordOtp,
+        newPassword: newPassword,
+      });
+    expect(resetRes.status).toBe(200);
+
+    // 5. Login with newly set password should succeed and user's authProvider should now be local
+    const loginSuccess = await request(app)
+      .post("/api/v1/auth/login")
+      .send({ email: "googleuser@example.com", password: newPassword });
+    expect(loginSuccess.status).toBe(200);
+    expect(loginSuccess.body.data.accessToken).toBeDefined();
+
+    // Verify authProvider is updated in DB
+    const updatedUser = await mongoose.model("User").findOne({ email: "googleuser@example.com" });
+    expect(updatedUser.authProvider).toBe("local");
+  });
 });
