@@ -22,6 +22,10 @@ const registerValidator = [
     .optional()
     .isIn(["traveler", "provider"])
     .withMessage("Role must be either traveler or provider"),
+  body("category")
+    .optional({ checkFalsy: true })
+    .isIn(["guide", "driver", "homestay", "planner", "photographer", "other"])
+    .withMessage("Category must be one of: guide, driver, homestay, planner, photographer, other"),
 ];
 
 const loginValidator = [

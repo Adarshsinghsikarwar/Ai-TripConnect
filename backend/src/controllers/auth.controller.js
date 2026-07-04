@@ -31,6 +31,7 @@ function sendTokenResponse(
                 name: user.name,
                 email: user.email,
                 roles: user.roles,
+                category: user.category,
                 isEmailVerified: user.isEmailVerified,
                 avatarUrl: user.avatarUrl,
                 phone: user.phone,

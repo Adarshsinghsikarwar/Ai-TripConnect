@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { MapPin, DollarSign, Briefcase } from "lucide-react";
 import toast from "react-hot-toast";
 import { providersApi } from "@/lib/api/providers.api";
+import useAuthStore from "@/store/useAuthStore";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { FieldError } from "@/components/shared/ErrorMessage";
 
@@ -15,9 +16,10 @@ const SERVICE_TYPES = ["guide", "driver", "homestay", "planner", "photographer",
 
 export default function RegisterProviderPage() {
   const router = useRouter();
+  const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    title: "", serviceType: "guide", description: "",
+    title: "", serviceType: user?.category || "guide", description: "",
     pricePerDay: "", city: "", address: "",
     longitude: "", latitude: "",
   });

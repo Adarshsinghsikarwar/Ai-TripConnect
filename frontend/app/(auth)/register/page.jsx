@@ -26,11 +26,19 @@ const schema = z
       .regex(/\d/, "Password must contain a number"),
     confirmPassword: z.string(),
     role: z.enum(["traveler", "provider"]),
+    category: z.string().optional(),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
-  });
+  })
+  .refine(
+    (d) => d.role !== "provider" || (d.category && d.category.trim() !== ""),
+    {
+      message: "Please select a service category",
+      path: ["category"],
+    }
+  );
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -41,6 +49,7 @@ export default function RegisterPage() {
     resolver: zodResolver(schema),
     defaultValues: {
       role: "traveler",
+      category: "",
     },
   });
 
@@ -54,6 +63,7 @@ export default function RegisterPage() {
         email: data.email,
         password: data.password,
         role: data.role,
+        category: data.role === "provider" ? data.category : undefined,
       });
       toast.success("Account created! Check your email for the OTP.");
       router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
@@ -140,6 +150,25 @@ export default function RegisterPage() {
               </div>
               <FieldError message={errors.role?.message} />
             </div>
+
+            {watchRole === "provider" && (
+              <div className="mt-3 animate-fadeIn">
+                <label className="block text-sm font-medium text-slate-300 mb-1.5">Service Category</label>
+                <select
+                  {...register("category")}
+                  className="w-full bg-surface border border-surface-border rounded-xl py-2.5 px-4 text-white text-sm focus:outline-none focus:border-brand-500 transition-colors capitalize"
+                >
+                  <option value="" className="bg-slate-900">Select a category...</option>
+                  <option value="driver" className="bg-slate-900">Driver</option>
+                  <option value="guide" className="bg-slate-900">Guide</option>
+                  <option value="homestay" className="bg-slate-900">Homestay</option>
+                  <option value="planner" className="bg-slate-900">Planner</option>
+                  <option value="photographer" className="bg-slate-900">Photographer</option>
+                  <option value="other" className="bg-slate-900">Other</option>
+                </select>
+                <FieldError message={errors.category?.message} />
+              </div>
+            )}
 
             {/* Name */}
             <div>

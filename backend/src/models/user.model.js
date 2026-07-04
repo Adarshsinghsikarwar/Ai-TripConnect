@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema(
       enum: ["traveler", "provider", "admin"],
       default: ["traveler"],
     },
+    category: {
+      type: String,
+      enum: ["guide", "driver", "homestay", "planner", "photographer", "other"],
+      default: null,
+    },
 
     authProvider: { type: String, enum: ["local", "google"], default: "local" },
     googleId: { type: String, index: true, sparse: true },

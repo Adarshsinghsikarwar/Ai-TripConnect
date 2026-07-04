@@ -14,7 +14,7 @@ const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 
 class AuthService {
-  async register({ name, email, password, role }) {
+  async register({ name, email, password, role, category }) {
     const existing = await userRepo.findByEmail(email);
     if (existing) {
       if (existing.authProvider === "google") {
@@ -31,12 +31,14 @@ class AuthService {
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes validity
 
     const userRoles = role && ["traveler", "provider"].includes(role) ? [role] : ["traveler"];
+    const userCategory = role === "provider" && ["guide", "driver", "homestay", "planner", "photographer", "other"].includes(category) ? category : null;
 
     const user = await userRepo.create({
       name,
       email,
       password,
       roles: userRoles,
+      category: userCategory,
       verificationOtp: otp,
       verificationOtpExpires: otpExpires,
       isEmailVerified: false, // Must verify first
