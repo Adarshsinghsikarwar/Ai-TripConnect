@@ -6,7 +6,7 @@ import { nodeEnv, clientUrl } from "../config/env.js";
 const cookieOptions = {
   httpOnly: true,
   secure: nodeEnv === "production",
-  sameSite: "strict",
+  sameSite: nodeEnv === "production" ? "none" : "strict",
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
