@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Sparkles, User, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Sparkles, User, Mail, Lock, Compass, Briefcase } from "lucide-react";
 import toast from "react-hot-toast";
 import { authApi } from "@/lib/api/auth.api";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
@@ -25,6 +25,7 @@ const schema = z
       .regex(/[A-Za-z]/, "Password must contain a letter")
       .regex(/\d/, "Password must contain a number"),
     confirmPassword: z.string(),
+    role: z.enum(["traveler", "provider"]),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords do not match",
@@ -36,9 +37,14 @@ export default function RegisterPage() {
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      role: "traveler",
+    },
   });
+
+  const watchRole = watch("role");
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -47,6 +53,7 @@ export default function RegisterPage() {
         name: data.name,
         email: data.email,
         password: data.password,
+        role: data.role,
       });
       toast.success("Account created! Check your email for the OTP.");
       router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
@@ -98,6 +105,42 @@ export default function RegisterPage() {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Account Type selection */}
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">I want to register as a</label>
+              <div className="grid grid-cols-2 gap-3">
+                <label className={`flex flex-col items-center justify-center gap-2 py-3 px-4 rounded-xl border cursor-pointer transition-all ${
+                  watchRole === "traveler"
+                    ? "border-brand-500 bg-brand-500/10 text-white"
+                    : "border-surface-border bg-surface text-slate-400 hover:text-slate-200"
+                }`}>
+                  <input
+                    type="radio"
+                    value="traveler"
+                    {...register("role")}
+                    className="sr-only"
+                  />
+                  <Compass size={20} className={watchRole === "traveler" ? "text-brand-400" : "text-slate-500"} />
+                  <span className="text-sm font-medium">Traveler</span>
+                </label>
+                <label className={`flex flex-col items-center justify-center gap-2 py-3 px-4 rounded-xl border cursor-pointer transition-all ${
+                  watchRole === "provider"
+                    ? "border-brand-500 bg-brand-500/10 text-white"
+                    : "border-surface-border bg-surface text-slate-400 hover:text-slate-200"
+                }`}>
+                  <input
+                    type="radio"
+                    value="provider"
+                    {...register("role")}
+                    className="sr-only"
+                  />
+                  <Briefcase size={20} className={watchRole === "provider" ? "text-brand-400" : "text-slate-500"} />
+                  <span className="text-sm font-medium">Service Provider</span>
+                </label>
+              </div>
+              <FieldError message={errors.role?.message} />
+            </div>
+
             {/* Name */}
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1.5">Full name</label>

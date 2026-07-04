@@ -18,6 +18,10 @@ const registerValidator = [
     .withMessage("Password must contain a number")
     .matches(/[A-Za-z]/)
     .withMessage("Password must contain a letter"),
+  body("role")
+    .optional()
+    .isIn(["traveler", "provider"])
+    .withMessage("Role must be either traveler or provider"),
 ];
 
 const loginValidator = [
