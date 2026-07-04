@@ -19,6 +19,9 @@ import { clientUrl } from "./config/env.js";
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Trust proxy for rate limiting (Render/Vercel proxies)
+app.set("trust proxy", 1);
+
 app.use(helmet()); // sensible security headers (HSTS, no-sniff, frame deny, etc.)
 app.disable("x-powered-by");
 app.use(morgan("dev"));
